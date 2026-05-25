@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spelling Bee | Escola Máxima</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:24px;
+background:
+linear-gradient(rgba(255,255,255,.86),rgba(255,255,255,.9)),
+url('https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=1600&auto=format&fit=crop');
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+.card{
+width:min(760px,100%);
+background:rgba(255,255,255,.88);
+backdrop-filter:blur(12px);
+border-radius:36px;
+padding:40px;
+box-shadow:0 20px 60px rgba(0,0,0,.18);
+text-align:center;
+}
+.logo{max-width:320px;width:80%;display:block;margin:0 auto 16px}
+h1{color:#08236b;font-size:3rem;margin:10px 0}
+.subtitle{color:#5f6674;font-size:1.2rem;line-height:1.6;margin-bottom:28px}
+.action{
+background:rgba(255,248,220,.92);
+border:2px solid rgba(255,196,0,.25);
+border-radius:28px;
+padding:28px;
+position:relative;
+overflow:hidden;
+}
+.action:after{
+content:'🐝 🍯 🐝';
+position:absolute;
+bottom:10px;
+right:18px;
+font-size:2rem;
+opacity:.18;
+}
+label{
+display:block;text-align:left;
+font-weight:700;color:#08236b;
+margin-bottom:10px;font-size:1.2rem;
+}
+input{
+width:100%;
+padding:18px;
+border-radius:22px;
+border:2px solid #d9dce5;
+font-size:2rem;
+text-align:center;
+margin-bottom:18px;
+}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+button{
+padding:18px;border:none;border-radius:22px;
+font-size:1.25rem;font-weight:800;cursor:pointer
+}
+.pronounce{background:#08236b;color:#fff}
+.spell{background:linear-gradient(135deg,#ffc400,#ff8a00);color:#08236b}
+.status{margin-top:18px;color:#08236b;font-size:1.2rem;font-weight:700;min-height:30px}
+.note{opacity:.7;margin-top:16px}
+@media(max-width:600px){
+.buttons{grid-template-columns:1fr}
+h1{font-size:2.2rem}
+input{font-size:1.4rem}
+.card{padding:24px}
+}
+</style>
+</head>
+<body>
+<div class="card">
+<img class="logo" src="assets/logo.png" alt="Spelling Bee Escola Máxima">
+<h1>Spelling Bee Practice</h1>
+<p class="subtitle">Digite qualquer palavra em inglês e clique em <strong>Pronunciation</strong> para ouvir a palavra ou em <strong>Spelling</strong> para ouvir letra por letra no inglês americano.</p>
+
+<div class="action">
+<label>Type your word:</label>
+<input id="word" placeholder="Ex.: beautiful">
+
+<div class="buttons">
+<button class="pronounce" onclick="pronounceWord()">Pronunciation</button>
+<button class="spell" onclick="spellWord()">Spelling</button>
+</div>
+
+<div class="status" id="status"></div>
+<div class="note">Pronúncia em inglês americano (quando disponível no navegador).</div>
+</div>
+</div>
+
+<script>
+const input=document.getElementById('word');
+const status=document.getElementById('status');
+
+function voice(){
+const voices=speechSynthesis.getVoices();
+return voices.find(v=>v.lang==='en-US') || voices.find(v=>v.lang.includes('en'));
+}
+
+function speak(text,rate=.82){
+speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(text);
+u.lang='en-US';
+u.rate=rate;
+u.voice=voice();
+speechSynthesis.speak(u);
+}
+
+function pronounceWord(){
+const word=input.value.trim();
+if(!word){status.textContent='Digite uma palavra primeiro.';return;}
+status.textContent='Pronouncing: '+word;
+speak(word,.82);
+}
+
+function spellWord(){
+const word=input.value.trim().toLowerCase();
+if(!word){status.textContent='Digite uma palavra primeiro.';return;}
+const spelled=word.split('').join(' ... ');
+status.textContent='Spelling: '+word.toUpperCase();
+speak(spelled,.66);
+}
+</script>
+</body>
+</html>
